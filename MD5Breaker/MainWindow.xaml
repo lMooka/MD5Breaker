@@ -1,12 +1,17 @@
 ﻿<Window x:Class="MD5Breaker.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525" LayoutUpdated="Window_LayoutUpdated_1">
+        Title="MainWindow" Height="350" Width="525" LayoutUpdated="Window_LayoutUpdated_1" Icon="icon.ico">
     <Grid>
-        <TextBox Name="lbl_output" Text="Not started" Margin="0,10,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22"/>
-        <Button Content="Go" Margin="121,91,321,0" VerticalAlignment="Top" Click="Button_Click_1"/>
-        <Button Content="update" HorizontalAlignment="Left" Margin="332,91,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
-        <TextBox x:Name="lbl_hash" Text="Not started" Margin="0,37,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22"/>
+        <TextBox Name="lbl_output" Text="Not started" Margin="0,10,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22" IsReadOnly="True"/>
+        <Button Content="Go" Margin="352,289,90,0" VerticalAlignment="Top" Click="Button_Click_1"/>
+        <Button Content="update" HorizontalAlignment="Left" Margin="432,289,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+        <TextBox x:Name="lbl_hash" Text="Not started" Margin="0,37,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22" IsReadOnly="True"/>
+        <TextBox Name="txtb_findhash" HorizontalAlignment="Left" Height="23" Margin="0,64,0,0" TextWrapping="Wrap" Text="2eae34ebf8cdec532f8bf62340cd896c" VerticalAlignment="Top" Width="517" TextAlignment="Center"/>
+        <TextBox Name="txtb_min" HorizontalAlignment="Left" Height="23" Margin="181,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="4"/>
+        <Label Content="min. password character count" HorizontalAlignment="Left" Margin="0,92,0,0" VerticalAlignment="Top" Width="176"/>
+        <TextBox Name="txtb_max" HorizontalAlignment="Left" Height="23" Margin="181,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="5"/>
+        <Label Content="max. password character count" HorizontalAlignment="Left" Margin="0,123,0,0" VerticalAlignment="Top" Width="176"/>
 
     </Grid>
 </Window>

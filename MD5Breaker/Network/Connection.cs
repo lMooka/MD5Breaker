@@ -8,5 +8,6 @@ namespace MD5Breaker.Network
 {
     public class Connection
     {
+        
     }
 }

@@ -40,7 +40,26 @@ namespace MD5Breaker
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            r = new runner();
+            DecrypterRange range = new DecrypterRange(MD5Decrypter.CharRange.Length);
+
+            int max = Convert.ToInt32(txtb_max.Text);
+            int min = Convert.ToInt32(txtb_min.Text);
+
+            int i;
+            int[] array = new int[min];
+
+            for(i = 0; i < min; i++)
+                array[i] = 0;
+            
+            range.setStartRange(array);
+            array = new int[max];
+
+             for(i = 0; i < max; i++)
+                 array[i] = MD5Decrypter.CharRange.Length;
+
+             range.setEndRange(array);
+
+             r = new runner(txtb_findhash.Text, range);
             t = new Thread(new ThreadStart(r.Run));
 
             //t.SetApartmentState(ApartmentState.STA);
@@ -55,7 +74,7 @@ namespace MD5Breaker
         private void Window_LayoutUpdated_1(object sender, EventArgs e)
         {
             lbl_output.Text = MD5Decrypter.currentPassword;
-            lbl_hash.Text = MD5Decrypter.currentHashPassword; 
+            lbl_hash.Text = MD5Decrypter.currentHashPassword;
         }
     }
 
@@ -63,23 +82,17 @@ namespace MD5Breaker
     {
         public string currentString;
         MD5Decrypter dec;
-        Window w;
-        TextBox output;
 
-        public runner()
+
+        public runner(string hash, DecrypterRange range)
         {
-            DecrypterRange range = new DecrypterRange(MD5Decrypter.CharRange.Length);
-
-            range.setStartRange(0, 0, 0);
-            range.setStartRange(67, 67, 67, 67);
-
-            dec = new MD5Decrypter("fa7f08233358e9b466effa1328168527", range); //kkkk
+            dec = new MD5Decrypter(hash, range);
         }
 
         public void Run()
         {
             //StreamWriter sw = new StreamWriter("C:\\Users\\Guilherme\\Desktop\\hash.txt", false);
-            
+
             try
             {
                 while (true)
