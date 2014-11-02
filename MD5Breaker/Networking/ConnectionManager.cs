@@ -5,8 +5,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using MD5Breaker.Networking.Packets;
 
-namespace MD5Breaker.Network
+namespace MD5Breaker.Networking
 {
     public class ConnectionManager
     {
@@ -71,6 +72,16 @@ namespace MD5Breaker.Network
             Connection conn = new Connection(connSocket);
             Connections.Add(conn);
             conn.Activate();
+        }
+
+        // IO
+
+        public void Broadcast(Packet packet)
+        {
+            foreach (Connection conn in Connections)
+            {
+                conn.socket.Send(packet.Data);
+            }
         }
     }
 }

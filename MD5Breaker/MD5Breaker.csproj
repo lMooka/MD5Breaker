@@ -74,9 +74,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Network\Connection.cs" />
-    <Compile Include="Network\ConnectionManager.cs" />
-    <Compile Include="Network\DecryptMessage.cs" />
+    <Compile Include="Networking\Connection.cs" />
+    <Compile Include="Networking\ConnectionManager.cs" />
+    <Compile Include="Networking\DecryptMessage.cs" />
+    <Compile Include="Networking\Packets\Message.cs" />
+    <Compile Include="Networking\Packets\Packet.cs" />
+    <Compile Include="Networking\Packets\PacketHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

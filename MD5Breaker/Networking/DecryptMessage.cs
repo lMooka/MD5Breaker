@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MD5Breaker.Network
+namespace MD5Breaker.Networking
 {
     public class DecryptMessage
     {

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MD5Breaker.Network;
+using MD5Breaker.Networking;
+using MD5Breaker.Networking.Packets;
 
 namespace Server
 {
@@ -16,7 +17,7 @@ namespace Server
             cm.Start(25565, 100);
 
             while (true)
-                Console.ReadLine();
+                cm.Broadcast(new Message(Console.ReadLine()));
         }
     }
 }

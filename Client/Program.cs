@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MD5Breaker.Network;
+using MD5Breaker.Networking;
+using MD5Breaker.Networking.Packets;
 
 namespace Client
 {
@@ -16,7 +17,7 @@ namespace Client
             cm.Connect("127.0.0.1", 25565);
 
             while (true)
-                Console.ReadLine();
+                cm.Broadcast(new Message(Console.ReadLine()));
         }
     }
 }
