@@ -12,6 +12,8 @@
         <Label Content="min. password character count" HorizontalAlignment="Left" Margin="0,92,0,0" VerticalAlignment="Top" Width="176"/>
         <TextBox Name="txtb_max" HorizontalAlignment="Left" Height="23" Margin="181,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="5"/>
         <Label Content="max. password character count" HorizontalAlignment="Left" Margin="0,123,0,0" VerticalAlignment="Top" Width="176"/>
+        <Button Content="Server" HorizontalAlignment="Left" Margin="91,289,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
+        <Button Content="Client" HorizontalAlignment="Left" Margin="195,289,0,0" VerticalAlignment="Top" Width="75"/>
 
     </Grid>
 </Window>

@@ -76,6 +76,11 @@ namespace MD5Breaker
             lbl_output.Text = MD5Decrypter.currentPassword;
             lbl_hash.Text = MD5Decrypter.currentHashPassword;
         }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class runner
