@@ -33,5 +33,10 @@ namespace MD5Breaker.Networking.Packets
         {
             Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, 4);
         }
+
+        protected void WriteString(string msg)
+        {
+            Buffer.BlockCopy(Encoding.UTF8.GetBytes(msg), 0, buffer, HeaderSize, msg.Length);
+        }
     }
 }

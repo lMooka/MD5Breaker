@@ -9,12 +9,28 @@ using MD5Breaker.Networking.Packets;
 
 namespace MD5Breaker.Networking
 {
+    public delegate void ProblemReporter(Exception e);
+    public delegate void ClientConnectedEvent(Connection connection);
+
     public class ConnectionManager
     {
-        Socket serverSocket;
-        Socket clientSocket;
+        // Singleton
+        private static ConnectionManager _instance;
+        public static ConnectionManager Instance
+        {
+            get
+            {
+                return (_instance ?? (_instance = new ConnectionManager()));
+            }
+        }
 
-        List<Connection> Connections;
+        // Events
+        public event ProblemReporter ProblemReportEvent;
+        public event ClientConnectedEvent ClientConnected;
+
+        private List<Connection> Connections;
+        private Socket serverSocket;
+        private Socket clientSocket;
 
         public ConnectionManager()
         {
@@ -24,57 +40,108 @@ namespace MD5Breaker.Networking
             Connections = new List<Connection>();
         }
 
+        #region "[Server-side]"
+
         public void Start(int port, int backlog)
         {
-            Bind(port);
-            Listen(backlog);
-            Accept();
+            try
+            {
+                Bind(port);
+                Listen(backlog);
+                Accept();
+            }
+            catch (Exception e)
+            {
+                ProblemReportEvent(e);
+            }
         }
-
         public void Bind(int port)
         {
             serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
         }
-
         public void Listen(int backlog)
         {
             serverSocket.Listen(backlog);
         }
-
         public void Accept()
         {
-            serverSocket.BeginAccept(new AsyncCallback(AcceptedCallback), serverSocket);
+            try
+            {
+                serverSocket.BeginAccept(new AsyncCallback(AcceptedCallback), serverSocket);
+            }
+            catch (Exception e)
+            {
+                ProblemReportEvent(e);
+            }
         }
-
         void AcceptedCallback(IAsyncResult result)
         {
             Socket connSocket = serverSocket.EndAccept(result);
-
-            Console.WriteLine("Um cliente conectou-se: " + connSocket.GetHashCode());
             Connection conn = new Connection(connSocket);
-            Connections.Add(conn);
             conn.Activate();
+
+            addConnection(conn);
             Accept();
         }
 
-        // Client-Side
+        #endregion
+
+        #region "[Client-side]"
 
         public void Connect(string ip, int port)
         {
-            Console.WriteLine("Conectado a " + ip + ":" + port + ".");
-            clientSocket.BeginConnect(new IPEndPoint(IPAddress.Parse(ip), port), ConnectedCallback, clientSocket);
+            try
+            {
+                Console.WriteLine("Conectado a " + ip + ":" + port + ".");
+                clientSocket.BeginConnect(new IPEndPoint(IPAddress.Parse(ip), port), ConnectedCallback, clientSocket);
+            }
+            catch (Exception e)
+            {
+                ProblemReportEvent(e);
+            }
         }
-
         void ConnectedCallback(IAsyncResult result)
         {
             Socket connSocket = result.AsyncState as Socket;
-
             Connection conn = new Connection(connSocket);
-            Connections.Add(conn);
-            conn.Activate();
+
+            try
+            {
+                conn.Activate();
+                addConnection(conn);
+                ClientConnected(conn);
+            }
+            catch (Exception ex)
+            {
+                ProblemReportEvent(ex);
+                //conn.Dispose();
+            }
         }
 
-        // IO
+        void addConnection(Connection conn)
+        {
+            Connections.Add(conn);
+            conn.ConnectionClosed += ConnectionProblem;
+        }
+
+        void removeConncection(Connection conn)
+        {
+            Connections.Remove(conn);
+        }
+
+        #endregion
+
+        #region "[Events]"
+
+        private void ConnectionProblem(Connection connection, Exception e)
+        {
+            Connections.Remove(connection);
+            connection.Dispose();
+            ProblemReportEvent(e);
+        }
+        #endregion
+
+        #region "[IO]"
 
         public void Broadcast(Packet packet)
         {
@@ -83,5 +150,11 @@ namespace MD5Breaker.Networking
                 conn.socket.Send(packet.Data);
             }
         }
+        public void SendPacket(Connection conn, Packet packet)
+        {
+            conn.socket.Send(packet.Data);
+        }
+
+        #endregion
     }
 }

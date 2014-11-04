@@ -9,8 +9,12 @@ using System.Threading.Tasks;
 
 namespace MD5Breaker.Networking
 {
-    public class Connection
+    public delegate void ConnectionLostEvent(Connection connection, Exception e);
+
+    public class Connection : IDisposable
     {
+        public event ConnectionLostEvent ConnectionClosed;
+
         public Socket socket { get; private set; }
 
         public static int bufferSize = 512;
@@ -24,25 +28,39 @@ namespace MD5Breaker.Networking
 
         void ReceivedCallback(IAsyncResult result)
         {
-            Socket clienteSocket = result.AsyncState as Socket;
+            try
+            {
+                Socket clienteSocket = result.AsyncState as Socket;
 
-            int bufSize = clienteSocket.EndReceive(result);
+                int bufSize = clienteSocket.EndReceive(result);
 
-            byte[] buf = new byte[bufSize];
-            Buffer.BlockCopy(buffer, 0, buf, 0, bufSize);
+                byte[] buf = new byte[bufSize];
+                Buffer.BlockCopy(buffer, 0, buf, 0, bufSize);
 
-            //handle
-            PacketHandler.Handle(buf);
+                //handle
+                PacketHandler.Handle(buf);
 
-            buffer = new byte[bufferSize];
-            clienteSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, clienteSocket);
+                buffer = new byte[bufferSize];
+                clienteSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, clienteSocket);
+            }
+            catch (Exception e)
+            {
+                ConnectionClosed(this, e);
+            }
         }
 
         public void Activate()
         {
             socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, socket);
         }
+
+
+
+        public void Dispose()
+        {
+            ConnectionClosed = null;
+            socket.Dispose();
+            this.Dispose();
+        }
     }
-
-
 }

@@ -1,0 +1,47 @@
+﻿<Window x:Class="View.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="clr-namespace:View"
+        Title="MD5Breaker" Height="382" Width="525" Icon="icon.ico">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Connection">
+                <Grid>
+                    <TextBlock Height="15" TextWrapping="Wrap" Text="IP" Margin="10,33,0,0" HorizontalAlignment="Left" Width="100" VerticalAlignment="Top"/>
+                    <TextBlock Height="15" TextWrapping="Wrap" Text="Port" Margin="290,34,0,0" HorizontalAlignment="Left" Width="100" VerticalAlignment="Top"/>
+                    <TextBlock Height="15" TextWrapping="Wrap" Text="Listen Port" Margin="10,89,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100"/>
+
+                    <TextBox Name="txtb_IP" Height="23" TextWrapping="Wrap" Text="127.0.0.1" Margin="10,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="265"/>
+                    <TextBox Name="txtb_Port" Height="23" TextWrapping="Wrap" Text="25565" Margin="290,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120"/>
+                    <Button Margin="415,49,0,0" Content="Connect" Click="Conectar" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86" />
+                    <TextBox Name="txtb_ListenPort" Height="23" TextWrapping="Wrap" Text="25565" Margin="10,109,0,0" HorizontalAlignment="Left" Width="67" VerticalAlignment="Top"/>
+                    <Button Margin="82,109,0,0" Content="Listen" Click="Listen" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86" />
+
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Chat">
+                <Grid Margin="0,-1,0,1">
+                    <v:Chat/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="MD5">
+                <Grid>
+                    <TextBox Name="lbl_output" Text="Not started" Margin="0,10,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22" IsReadOnly="True"/>
+                    <Button Content="Go" Margin="336,129,106,0" VerticalAlignment="Top" Click="Button_Click_1"/>
+                    <Button Content="update" HorizontalAlignment="Left" Margin="410,129,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+                    <TextBox x:Name="lbl_hash" Text="Not started" Margin="0,37,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22" IsReadOnly="True"/>
+                    <TextBox Name="txtb_findhash" HorizontalAlignment="Left" Height="23" Margin="0,64,0,0" TextWrapping="Wrap" Text="2eae34ebf8cdec532f8bf62340cd896c" VerticalAlignment="Top" Width="517" TextAlignment="Center"/>
+                    <TextBox Name="txtb_min" HorizontalAlignment="Left" Height="23" Margin="181,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="4"/>
+                    <Label Content="min. password character count" HorizontalAlignment="Left" Margin="0,92,0,0" VerticalAlignment="Top" Width="176"/>
+                    <TextBox Name="txtb_max" HorizontalAlignment="Left" Height="23" Margin="181,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="5"/>
+                    <Label Content="max. password character count" HorizontalAlignment="Left" Margin="0,123,0,0" VerticalAlignment="Top" Width="176"/>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+
+    </Grid>
+</Window>
