@@ -1,4 +1,5 @@
 ﻿using MD5Breaker.Networking;
+using MD5Breaker.Networking.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace Control
         public void Listen(int port)
         {
             ConnectionManager.Instance.Start(port, 100);
+        }
+
+        public void SendMessage(string msg)
+        {
+            ConnectionManager.Instance.Broadcast(new MessagePacket(msg));
         }
     }
 }

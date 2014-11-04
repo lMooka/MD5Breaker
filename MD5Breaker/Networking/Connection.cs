@@ -1,6 +1,7 @@
 ﻿using MD5Breaker.Networking.Packets;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -15,6 +16,7 @@ namespace MD5Breaker.Networking
     {
         public event ConnectionLostEvent ConnectionClosed;
 
+        public int connHash { get; private set; }
         public Socket socket { get; private set; }
 
         public static int bufferSize = 512;
@@ -24,6 +26,7 @@ namespace MD5Breaker.Networking
         {
             this.socket = socket;
             buffer = new byte[bufferSize];
+            connHash = this.GetUniqueID();
         }
 
         void ReceivedCallback(IAsyncResult result)
@@ -54,13 +57,17 @@ namespace MD5Breaker.Networking
             socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, socket);
         }
 
-
-
         public void Dispose()
         {
             ConnectionClosed = null;
             socket.Dispose();
             this.Dispose();
+        }
+
+        private int GetUniqueID()
+        {
+            Process p = Process.GetCurrentProcess();
+            return (Environment.MachineName + p.Id + socket.RemoteEndPoint.ToString()).GetHashCode();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MD5Breaker.Networking.Packets
     {
         private string _message;
 
-        public string message
+        public string Message
         {
             get
             {
@@ -19,14 +19,20 @@ namespace MD5Breaker.Networking.Packets
             private set
             {
                 _message = value;
-                WriteString(value);
+                WriteString(value, HeaderSize);
             }
         }
 
         public MessagePacket(string msg)
             : base((ushort)(HeaderSize + msg.Length), 1)
         {
-            this.message = msg;
+            this.Message = msg;
+        }
+
+        public MessagePacket(byte[] buf)
+            : base(buf)
+        {
+            _message = Encoding.UTF8.GetString(buf, HeaderSize, buf.Length - Packet.HeaderSize);
         }
     }
 }

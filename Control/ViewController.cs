@@ -1,4 +1,5 @@
 ﻿using MD5Breaker.Networking;
+using MD5Breaker.Networking.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,13 @@ namespace Control
 
             cm.ProblemReportEvent += cm_ProblemReportEvent;
             cm.ClientConnected += cm_ClientConnected;
+            PacketHandler.OnPacketMessageReceived += PacketHandler_OnPacketMessageReceived;
+        }
+
+        void PacketHandler_OnPacketMessageReceived(Packet packet)
+        {
+            if (packet is MessagePacket)
+                OnMessageReceived(string.Format((packet as MessagePacket).Message));
         }
 
         private void cm_ClientConnected(Connection connection)
@@ -42,7 +50,7 @@ namespace Control
 
         private void cm_ProblemReportEvent(Exception e)
         {
-            OnMessageReceived(string.Format("Error: {0}" + e.Message));
+            OnMessageReceived(string.Format("Error: {0}", e.Message));
         }
     }
 }

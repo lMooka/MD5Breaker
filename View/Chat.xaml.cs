@@ -17,8 +17,6 @@ using System.Windows.Shapes;
 
 namespace View
 {
-
-
     public partial class Chat : UserControl
     {
         public delegate void UpdateMessage(string msg);
@@ -38,6 +36,16 @@ namespace View
         {
             Dispatcher.Invoke((Action)delegate() { MessageArea.Text += Message + "\n"; });
             
+        }
+
+        private void Press_Enter(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ModelController.Instance.SendMessage(txtb_msg.Text);
+                //MessageArea.Text += txtb_msg.Text + "\n";
+                txtb_msg.Text = "";
+            }
         }
     }
 }

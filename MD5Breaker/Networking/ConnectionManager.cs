@@ -80,7 +80,10 @@ namespace MD5Breaker.Networking
             Connection conn = new Connection(connSocket);
             conn.Activate();
 
-            addConnection(conn);
+            string[] split = conn.socket.RemoteEndPoint.ToString().Split(':');
+            Broadcast(new ConnectionPacket(split[0], 25565));
+
+            AddConnection(conn);
             Accept();
         }
 
@@ -92,7 +95,7 @@ namespace MD5Breaker.Networking
         {
             try
             {
-                Console.WriteLine("Conectado a " + ip + ":" + port + ".");
+                //Console.WriteLine("Conectado a " + ip + ":" + port + ".");
                 clientSocket.BeginConnect(new IPEndPoint(IPAddress.Parse(ip), port), ConnectedCallback, clientSocket);
             }
             catch (Exception e)
@@ -108,8 +111,7 @@ namespace MD5Breaker.Networking
             try
             {
                 conn.Activate();
-                addConnection(conn);
-                ClientConnected(conn);
+                AddConnection(conn);
             }
             catch (Exception ex)
             {
@@ -118,17 +120,26 @@ namespace MD5Breaker.Networking
             }
         }
 
-        void addConnection(Connection conn)
+        void AddConnection(Connection conn)
         {
             Connections.Add(conn);
             conn.ConnectionClosed += ConnectionProblem;
+            ClientConnected(conn);
         }
-
-        void removeConncection(Connection conn)
+        void RemoveConncection(Connection conn)
         {
             Connections.Remove(conn);
         }
+        public Connection GetConnection(int connHash)
+        {
+            foreach (Connection c in Connections)
+            {
+                if (c.connHash == connHash)
+                    return c;
+            }
 
+            return null;
+        }
         #endregion
 
         #region "[Events]"
@@ -136,7 +147,7 @@ namespace MD5Breaker.Networking
         private void ConnectionProblem(Connection connection, Exception e)
         {
             Connections.Remove(connection);
-            connection.Dispose();
+            //connection.Dispose();
             ProblemReportEvent(e);
         }
         #endregion
@@ -147,12 +158,14 @@ namespace MD5Breaker.Networking
         {
             foreach (Connection conn in Connections)
             {
-                conn.socket.Send(packet.Data);
+                if (conn.socket.Connected)
+                    conn.socket.Send(packet.Data);
             }
         }
         public void SendPacket(Connection conn, Packet packet)
         {
-            conn.socket.Send(packet.Data);
+            if (conn.socket.Connected)
+                conn.socket.Send(packet.Data);
         }
 
         #endregion

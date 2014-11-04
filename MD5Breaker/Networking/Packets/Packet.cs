@@ -24,19 +24,25 @@ namespace MD5Breaker.Networking.Packets
             WriteUShort(type, 2);
         }
 
-        public void WriteUShort(ushort value, int offset)
+        public Packet(byte[] buf)
+            : this((ushort)buf.Length, 2)
+        {
+            buffer = buf;
+        }
+
+        protected void WriteUShort(ushort value, int offset)
         {
             Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, 2);
         }
 
-        public void WriteInt(ushort value, int offset)
+        protected void WriteInt(ushort value, int offset)
         {
             Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, 4);
         }
 
-        protected void WriteString(string msg)
+        protected void WriteString(string msg, int offset)
         {
-            Buffer.BlockCopy(Encoding.UTF8.GetBytes(msg), 0, buffer, HeaderSize, msg.Length);
+            Buffer.BlockCopy(Encoding.UTF8.GetBytes(msg), 0, buffer, offset, msg.Length);
         }
     }
 }
