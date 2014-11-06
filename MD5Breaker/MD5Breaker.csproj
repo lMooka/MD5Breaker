@@ -69,6 +69,7 @@
     <Compile Include="Networking\Packets\MessagePacket.cs" />
     <Compile Include="Networking\Packets\Packet.cs" />
     <Compile Include="Networking\Packets\PacketHandler.cs" />
+    <Compile Include="Networking\Packets\ClientInfoPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -35,7 +35,7 @@ namespace MD5Breaker.Networking.Packets
             Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, 2);
         }
 
-        protected void WriteInt(ushort value, int offset)
+        protected void WriteInt(int value, int offset)
         {
             Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, 4);
         }

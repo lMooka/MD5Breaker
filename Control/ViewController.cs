@@ -34,13 +34,12 @@ namespace Control
 
             cm.ProblemReportEvent += cm_ProblemReportEvent;
             cm.ClientConnected += cm_ClientConnected;
-            PacketHandler.OnPacketMessageReceived += PacketHandler_OnPacketMessageReceived;
+            PacketHandler.OnMessageReceived += PacketHandler_OnMessageReceived;
         }
 
-        void PacketHandler_OnPacketMessageReceived(Packet packet)
+        void PacketHandler_OnMessageReceived(string message)
         {
-            if (packet is MessagePacket)
-                OnMessageReceived(string.Format((packet as MessagePacket).Message));
+            OnMessageReceived(message);
         }
 
         private void cm_ClientConnected(Connection connection)
