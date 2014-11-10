@@ -39,26 +39,20 @@ namespace View
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            DecrypterRange range = new DecrypterRange(MD5Decrypter.CharRange.Length);
-
             int max = Convert.ToInt32(txtb_max.Text);
             int min = Convert.ToInt32(txtb_min.Text);
 
             int i;
-            int[] array = new int[min];
+            uint[] start = new uint[min];
+            uint[] end = new uint[max];
 
             for (i = 0; i < min; i++)
-                array[i] = 0;
-
-            range.setStartRange(array);
-            array = new int[max];
+                start[i] = 0;
 
             for (i = 0; i < max; i++)
-                array[i] = MD5Decrypter.CharRange.Length;
+                end[i] = Convert.ToUInt32(MD5Decrypter.CharRange.Length);
 
-            range.setEndRange(array);
-
-            r = new runner(txtb_findhash.Text, range);
+            r = new runner(txtb_findhash.Text, new DecrypterRange(start, end, Convert.ToUInt32(MD5Decrypter.CharRange.Length)));
             t = new Thread(new ThreadStart(r.Run));
 
             //t.SetApartmentState(ApartmentState.STA);
@@ -105,6 +99,21 @@ namespace View
             {
                 MessageBox.Show("Formato incorreto de IP ou Porta.");
             }
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            ulong value = ulong.Parse(txtb_value.Text);
+            uint r = Convert.ToUInt32(MD5Decrypter.CharRange.Length);
+            DecrypterRange range = new DecrypterRange(new uint[] { 0, 0, 0, 0 }, new uint[] { r, r, r, r, r, r, r, r }, r);
+
+            range.Plus(value);
+
+            foreach (int i in range.currentRange)
+            {
+                txtb_text.Text += i + ",";
+            }
+            txtb_text.Text += "\n";
         }
     }
 

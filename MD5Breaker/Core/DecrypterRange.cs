@@ -8,36 +8,28 @@ namespace MD5Breaker.Core
 {
     public class DecrypterRange
     {
-        public int charOffset { get; private set; }
+        public uint charOffset { get; private set; }
 
-        public int[] startRange;
-        public int[] endRange;
-        public int[] currentRange;
+        public uint[] startRange;
+        public uint[] endRange;
+        public uint[] currentRange;
 
-        public DecrypterRange(int charOffset)
+        public DecrypterRange(uint[] startRange, uint[] endRange, uint charOffset)
         {
             this.charOffset = charOffset;
-        }
-
-        public void setStartRange(params int[] range)
-        {
-            startRange = range;
+            this.startRange = startRange;
+            this.endRange = endRange;
 
             if (currentRange == null)
-                currentRange = (int[])startRange.Clone();
+                currentRange = (uint[])startRange.Clone();
         }
 
-        public void setEndRange(params int[] range)
+        public void Next()
         {
-            endRange = range;
-        }
-
-        public int[] Next()
-        {
-            int[] current = currentRange;
+            uint[] current = currentRange;
             int i;
 
-            for (i = currentRange.Length-1; i >= 0; i--)
+            for (i = currentRange.Length - 1; i >= 0; i--)
             {
                 currentRange[i]++;
 
@@ -49,19 +41,68 @@ namespace MD5Breaker.Core
 
                     if (i == 0)
                     {
-                        int[] newRange = new int[currentRange.Length + 1];
+                        uint[] newRange = new uint[currentRange.Length + 1];
                         newRange[0] = 0;
 
                         int j = 1;
-                        foreach (int cr in currentRange)
+                        foreach (uint cr in currentRange)
                             newRange[j++] = cr;
 
                         currentRange = newRange;
                     }
                 }
             }
+        }
+        /* Plus(ulong value)
+         * Adiciona um valor ao Range.
+         */
+        public void Plus(ulong value)
+        {
+            currentRange = RecursivePlus(value, currentRange);
+        }
 
-            return current;
+        private uint[] RecursivePlus(ulong value, uint[] array)
+        {
+            ulong plusNext = (value / charOffset);
+            ulong lastValue = array[array.Length - 1] + (value - (plusNext * charOffset));
+
+            if (plusNext > 0)
+            {
+                uint[] nArray;
+                if (plusNext > charOffset && array.Length == 1)
+                {
+                    nArray = new uint[array.Length];
+                    nArray[0] = 0;
+
+                    for (int i = 1, j = 0; i < nArray.Length - 2; i++, j++)
+                        nArray[i] = array[j];
+                }
+                else if (array.Length > 1)
+                {
+                    nArray = new uint[array.Length - 1];
+                    for (int i = 0; i < array.Length - 2; i++)
+                        nArray[i] = array[i];
+                }
+                else
+                {
+                    return new uint[] { Convert.ToUInt32(lastValue) };
+                }
+
+                uint[] recursiveResult = RecursivePlus(plusNext, nArray);
+                uint[] result = new uint[recursiveResult.Length + 1];
+
+                for (int i = 0; i < result.Length - 1; i++)
+                    result[i] = recursiveResult[i];
+
+                result[result.Length - 1] = Convert.ToUInt32(lastValue);
+
+                return result;
+            }
+            else
+            {
+                array[array.Length - 1] = Convert.ToUInt32(lastValue);
+                return array;
+            }
         }
     }
 }

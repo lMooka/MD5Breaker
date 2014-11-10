@@ -37,7 +37,7 @@ namespace View
             Dispatcher.Invoke((Action)delegate()
             {
                 MessageArea.Text += Message + "\n";
-                //MessageArea.ScrollToLine(MessageArea.LineCount - 1);
+                MessageArea.ScrollToLine(MessageArea.LineCount - 1);
             });
 
         }
@@ -48,7 +48,7 @@ namespace View
             {
                 ModelController.Instance.SendMessage(Environment.MachineName + ": " + txtb_msg.Text);
                 MessageArea.Text += "Me: " + txtb_msg.Text + "\n";
-                //MessageArea.ScrollToLine(MessageArea.LineCount - 1);
+                MessageArea.ScrollToLine(MessageArea.LineCount - 1);
                 txtb_msg.Text = "";
             }
         }

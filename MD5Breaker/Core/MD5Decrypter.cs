@@ -32,10 +32,10 @@ namespace MD5Breaker.Core
 
         private string GenerateSeqPassword()
         {
-            int[] range = Range.Next();
+            Range.Next();
 
             string s = "";
-            foreach (int r in range)
+            foreach (int r in Range.currentRange)
             {
                 s += CharRange[r];
             }

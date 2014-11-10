@@ -39,6 +39,14 @@
                     <Label Content="max. password character count" HorizontalAlignment="Left" Margin="0,123,0,0" VerticalAlignment="Top" Width="176"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Test">
+                <Grid>
+                    <TextBox Name="txtb_text" Margin="10,0,10,48" />
+                    <Button Content="Test" Margin="395,280,10,10" Click="Button_Click_3"/>
+                    <TextBox Name="txtb_value" Margin="10,280,121,10"/>
+                </Grid>
+            </TabItem>
+
 
         </TabControl>
 
