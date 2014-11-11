@@ -4,14 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MD5Breaker.Core
+namespace MD5Breaker.Networking.Packets
 {
-    public class Range
+    public class BlockProcessPacket
     {
-
-        public Range(params int[] range)
-        {
-            
-        }
     }
 }

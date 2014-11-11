@@ -59,12 +59,14 @@
     <Compile Include="Core\DecrypterRange.cs" />
     <Compile Include="Core\HashFoundException.cs" />
     <Compile Include="Core\MD5Decrypter.cs" />
-    <Compile Include="Core\Range.cs" />
+    <Compile Include="Core\ProcessingManager.cs" />
+    <Compile Include="Networking\Packets\BlockProcessPacket.cs" />
+    <Compile Include="Networking\Packets\ProcessingBlockNotificationPacket.cs" />
+    <Compile Include="Core\ProcessBlock.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Networking\Connection.cs" />
     <Compile Include="Networking\ConnectionManager.cs" />
-    <Compile Include="Networking\DecryptMessage.cs" />
     <Compile Include="Networking\Packets\ConnectionPacket.cs" />
     <Compile Include="Networking\Packets\MessagePacket.cs" />
     <Compile Include="Networking\Packets\Packet.cs" />

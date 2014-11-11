@@ -53,15 +53,45 @@ namespace MD5Breaker.Core
                 }
             }
         }
+
         /* Plus(ulong value)
          * Adiciona um valor ao Range.
          */
         public void Plus(ulong value)
         {
-            currentRange = RecursivePlus(value, currentRange);
+            int i;
+            var result = RecursivePlus(value, currentRange);
+
+            uint[] current = currentRange;
+
+            for (i = currentRange.Length - 1; i >= 0; i--)
+            {
+                result[i] += currentRange[i];
+
+                if (result[i] < charOffset)
+                    break;
+                else
+                {
+                    result[i] = 0;
+
+                    if (i == 0)
+                    {
+                        uint[] newRange = new uint[result.Length + 1];
+                        newRange[0] = 0;
+
+                        int j = 1;
+                        foreach (uint cr in result)
+                            newRange[j++] = cr;
+
+                        result = newRange;
+                    }
+                }
+            }
+
+            currentRange = result;
         }
 
-        private uint[] RecursivePlus(ulong value, uint[] array)
+        public uint[] RecursivePlus(ulong value, uint[] array)
         {
             ulong plusNext = (value / charOffset);
             ulong lastValue = array[array.Length - 1] + (value - (plusNext * charOffset));
@@ -103,6 +133,14 @@ namespace MD5Breaker.Core
                 array[array.Length - 1] = Convert.ToUInt32(lastValue);
                 return array;
             }
+        }
+
+        public DecrypterRange Clone()
+        {
+            DecrypterRange range = new DecrypterRange(startRange, endRange, charOffset);
+            range.currentRange = currentRange;
+
+            return range;
         }
     }
 }

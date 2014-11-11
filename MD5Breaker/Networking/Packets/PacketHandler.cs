@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MD5Breaker.Core;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,7 +26,6 @@ namespace MD5Breaker.Networking.Packets
                     var ciPacket = new ClientInfoPacket(packet);
                     conn.RemoteClientID = ciPacket.ClientID;
 
-
                     string ip = conn.socket.RemoteEndPoint.ToString().Split(':')[0];
                     ushort port = ciPacket.ListenPort;
 
@@ -47,6 +47,13 @@ namespace MD5Breaker.Networking.Packets
                         //OnMessageReceived(string.Format("trying to connect: {0}:{1}", cPacket.IP, cPacket.Port));
                         cm.Connect(cPacket.IP, cPacket.Port);
                     }
+                    break;
+
+                case 3:
+                    var pm = ProcessingManager.Instance;
+                    ProcessingBlockNotificationPacket pbnp = new ProcessingBlockNotificationPacket(packet);
+                    
+                    pm.SetProcessingState(pbnp.BlockId, pbnp.State);
                     break;
             }
 

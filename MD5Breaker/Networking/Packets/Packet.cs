@@ -32,12 +32,17 @@ namespace MD5Breaker.Networking.Packets
 
         protected void WriteUShort(ushort value, int offset)
         {
-            Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, 2);
+            Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, sizeof(ushort));
         }
 
         protected void WriteInt(int value, int offset)
         {
-            Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, sizeof(int));
+        }
+
+        protected void WriteULong(ulong value, int offset)
+        {
+            Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, sizeof(ulong));
         }
 
         protected void WriteString(string msg, int offset)

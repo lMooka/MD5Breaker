@@ -29,7 +29,7 @@
             <TabItem Header="MD5">
                 <Grid>
                     <TextBox Name="lbl_output" Text="Not started" Margin="0,10,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22" IsReadOnly="True"/>
-                    <Button Content="Go" Margin="336,129,106,0" VerticalAlignment="Top" Click="Button_Click_1"/>
+                    <Button Content="Go" Margin="336,129,106,0" VerticalAlignment="Top" Click="Decrypt_Click"/>
                     <Button Content="update" HorizontalAlignment="Left" Margin="410,129,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
                     <TextBox x:Name="lbl_hash" Text="Not started" Margin="0,37,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22" IsReadOnly="True"/>
                     <TextBox Name="txtb_findhash" HorizontalAlignment="Left" Height="23" Margin="0,64,0,0" TextWrapping="Wrap" Text="2eae34ebf8cdec532f8bf62340cd896c" VerticalAlignment="Top" Width="517" TextAlignment="Center"/>
@@ -42,7 +42,7 @@
             <TabItem Header="Test">
                 <Grid>
                     <TextBox Name="txtb_text" Margin="10,0,10,48" />
-                    <Button Content="Test" Margin="395,280,10,10" Click="Button_Click_3"/>
+                    <Button Content="Test" Margin="395,280,10,10" Click="Test_Click"/>
                     <TextBox Name="txtb_value" Margin="10,280,121,10"/>
                 </Grid>
             </TabItem>

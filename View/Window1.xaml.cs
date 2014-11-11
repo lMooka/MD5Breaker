@@ -22,7 +22,7 @@ namespace View
     public partial class Window1 : Window
     {
         Thread t;
-        runner r;
+        Runner r;
 
         public static Queue<string> queue;
         public static string currentpw;
@@ -37,7 +37,7 @@ namespace View
             queue = new Queue<string>();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Decrypt_Click(object sender, RoutedEventArgs e)
         {
             int max = Convert.ToInt32(txtb_max.Text);
             int min = Convert.ToInt32(txtb_min.Text);
@@ -51,8 +51,11 @@ namespace View
 
             for (i = 0; i < max; i++)
                 end[i] = Convert.ToUInt32(MD5Decrypter.CharRange.Length);
+            
+            var d = new DecrypterRange(start, end, Convert.ToUInt32(MD5Decrypter.CharRange.Length));
+            ProcessingManager.Instance.InitBlocks(d);
 
-            r = new runner(txtb_findhash.Text, new DecrypterRange(start, end, Convert.ToUInt32(MD5Decrypter.CharRange.Length)));
+            r = new Runner(txtb_findhash.Text, d);
             t = new Thread(new ThreadStart(r.Run));
 
             //t.SetApartmentState(ApartmentState.STA);
@@ -101,7 +104,7 @@ namespace View
             }
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void Test_Click(object sender, RoutedEventArgs e)
         {
             ulong value = ulong.Parse(txtb_value.Text);
             uint r = Convert.ToUInt32(MD5Decrypter.CharRange.Length);
@@ -117,13 +120,13 @@ namespace View
         }
     }
 
-    public class runner
+    public class Runner
     {
         public string currentString;
         MD5Decrypter dec;
 
 
-        public runner(string hash, DecrypterRange range)
+        public Runner(string hash, DecrypterRange range)
         {
             dec = new MD5Decrypter(hash, range);
         }
