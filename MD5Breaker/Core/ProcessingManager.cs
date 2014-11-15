@@ -10,7 +10,8 @@ namespace MD5Breaker.Core
 {
     public class ProcessingManager
     {
-        // Singleton
+        // Singleton]
+        private string currentPassword;
         private static ProcessingManager _instance;
         public static ProcessingManager Instance
         {
@@ -60,6 +61,24 @@ namespace MD5Breaker.Core
         {
             var block = GetFreeBlock();
             ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, BlockState.Processing));
+        }
+
+        public void Crack()
+        {
+            try
+            {
+
+            }
+            catch (HashFoundException hfe)
+            {
+                AnswerFound(hfe.Message);
+            }
+
+        }
+
+        public void AnswerFound(string Password)
+        {
+            ConnectionManager.Instance.Broadcast(new HashFoundPacket(Password));
         }
     }
 }

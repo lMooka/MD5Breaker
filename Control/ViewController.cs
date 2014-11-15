@@ -10,6 +10,7 @@ namespace Control
 {
     public delegate void MessageReceivedEvent(string Message);
 
+
     public class ViewController
     {
         private static ViewController _instance;
@@ -22,6 +23,7 @@ namespace Control
         }
 
         public MessageReceivedEvent OnMessageReceived;
+        public MessageReceivedEvent OnHashFoundEvent;
 
         public ViewController()
         {
@@ -35,12 +37,20 @@ namespace Control
             cm.ProblemReportEvent += cm_ProblemReportEvent;
             cm.ClientConnected += cm_ClientConnected;
             PacketHandler.OnMessageReceived += PacketHandler_OnMessageReceived;
+            PacketHandler.OnHashFoundEvent += PacketHandler_OnHashFoundEvent;
+        }
+
+        void PacketHandler_OnHashFoundEvent(string message)
+        {
+            OnHashFoundEvent(message);
+
         }
 
         void PacketHandler_OnMessageReceived(string message)
         {
             OnMessageReceived(message);
         }
+
 
         private void cm_ClientConnected(Connection connection)
         {

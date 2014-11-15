@@ -35,7 +35,15 @@ namespace View
             InitializeComponent();
             Instance = this;
             queue = new Queue<string>();
+            ViewController.Instance.OnHashFoundEvent += ShowHashFound;
         }
+
+        private void ShowHashFound(string Message)
+        {
+            MessageBox.Show(Message);
+        }
+
+
 
         private void Decrypt_Click(object sender, RoutedEventArgs e)
         {

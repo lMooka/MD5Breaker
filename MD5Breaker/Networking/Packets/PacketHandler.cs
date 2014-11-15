@@ -10,15 +10,17 @@ namespace MD5Breaker.Networking.Packets
 {
     public delegate void PacketNotifierEvent(string message);
 
+
     public static class PacketHandler
     {
         public static event PacketNotifierEvent OnMessageReceived;
+        public static event PacketNotifierEvent OnHashFoundEvent;
 
         public static Packet Handle(Connection conn, byte[] packet)
-        {
-
+        {            
             ushort packetType = BitConverter.ToUInt16(packet, 2);
             var cm = ConnectionManager.Instance;
+            var pm = ProcessingManager.Instance;
 
             switch (packetType)
             {
@@ -50,11 +52,17 @@ namespace MD5Breaker.Networking.Packets
                     break;
 
                 case 3:
-                    var pm = ProcessingManager.Instance;
+                
                     ProcessingBlockNotificationPacket pbnp = new ProcessingBlockNotificationPacket(packet);
                     
                     pm.SetProcessingState(pbnp.BlockId, pbnp.State);
                     break;
+                case 4:
+                    HashFoundPacket hfPacket = new HashFoundPacket(packet);
+                    OnHashFoundEvent(hfPacket.Password);
+                    break;
+
+
             }
 
             return null;
