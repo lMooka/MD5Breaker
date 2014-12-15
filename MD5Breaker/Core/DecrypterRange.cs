@@ -24,7 +24,37 @@ namespace MD5Breaker.Core
                 currentRange = (uint[])startRange.Clone();
         }
 
-        public void Next()
+        public DecrypterRange(ulong blockid, ulong blocksize, uint charOffset)
+        {
+            this.charOffset = charOffset;
+
+            this.startRange = RecursivePlus(blockid * blocksize, new uint[1] { 0 });
+            this.endRange = RecursivePlus(blockid * blocksize + blocksize, new uint[1] { 0 });
+
+            this.currentRange = (uint[]) startRange.Clone();
+        }
+
+        public ulong GetNumber()
+        {
+            return DecrypterRange.GetNumber(endRange);
+        }
+
+        public ulong GetCurrentNumber()
+        {
+            return DecrypterRange.GetNumber(currentRange);
+        }
+
+        public static ulong GetNumber(uint[] range)
+        {
+            ulong length = 1;
+
+            foreach (ulong value in range)
+                length *= value;
+
+            return length;
+        }
+
+        public ulong Next()
         {
             uint[] current = currentRange;
             int i;
@@ -52,6 +82,8 @@ namespace MD5Breaker.Core
                     }
                 }
             }
+
+            return DecrypterRange.GetNumber(currentRange);
         }
 
         /* Plus(ulong value)

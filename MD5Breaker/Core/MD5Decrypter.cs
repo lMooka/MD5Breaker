@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MD5Breaker.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -11,6 +12,7 @@ namespace MD5Breaker.Core
     {
         public static string currentPassword;
         public static string currentHashPassword;
+        private string initialHash = "";
 
         public static char[] CharRange = {
                                             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'k', 'x', 'w', 'y', 'z',
@@ -43,7 +45,7 @@ namespace MD5Breaker.Core
             return s;
         }
 
-        public string Crack()
+        public void Crack()
         {
             string gpw = GenerateSeqPassword();
             string hash = GetMd5Hash(md5, gpw);
@@ -52,9 +54,13 @@ namespace MD5Breaker.Core
             currentHashPassword = hash;
 
             if (Hash == hash)
-                throw new HashFoundException(gpw);
+                throw new HashFoundException(md5 + " : " + gpw);
 
-            return gpw;
+            if (initialHash == hash)
+                throw new HashNotFoundException();
+
+            if (initialHash == "")
+                initialHash = hash;
         }
 
         static string GetMd5Hash(MD5 md5Hash, string input)

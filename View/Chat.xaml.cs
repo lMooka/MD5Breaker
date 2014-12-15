@@ -37,7 +37,8 @@ namespace View
             Dispatcher.Invoke((Action)delegate()
             {
                 MessageArea.Text += Message + "\n";
-                MessageArea.ScrollToLine(MessageArea.LineCount - 1);
+                if (MessageArea.LineCount > 0)
+                    MessageArea.ScrollToLine(MessageArea.LineCount - 1);
             });
 
         }

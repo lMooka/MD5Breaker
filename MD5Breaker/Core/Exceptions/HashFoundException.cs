@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MD5Breaker.Core
+namespace MD5Breaker.Core.Exceptions
 {
     public class HashFoundException : Exception
     {

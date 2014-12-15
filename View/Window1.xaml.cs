@@ -21,9 +21,6 @@ namespace View
 {
     public partial class Window1 : Window
     {
-        Thread t;
-        Runner r;
-
         public static Queue<string> queue;
         public static string currentpw;
         public static string currenthash;
@@ -47,27 +44,10 @@ namespace View
 
         private void Decrypt_Click(object sender, RoutedEventArgs e)
         {
-            int max = Convert.ToInt32(txtb_max.Text);
-            int min = Convert.ToInt32(txtb_min.Text);
+            uint max = Convert.ToUInt32(txtb_max.Text);
+            uint min = Convert.ToUInt32(txtb_min.Text);
 
-            int i;
-            uint[] start = new uint[min];
-            uint[] end = new uint[max];
-
-            for (i = 0; i < min; i++)
-                start[i] = 0;
-
-            for (i = 0; i < max; i++)
-                end[i] = Convert.ToUInt32(MD5Decrypter.CharRange.Length);
-            
-            var d = new DecrypterRange(start, end, Convert.ToUInt32(MD5Decrypter.CharRange.Length));
-            ProcessingManager.Instance.InitBlocks(d);
-
-            r = new Runner(txtb_findhash.Text, d);
-            t = new Thread(new ThreadStart(r.Run));
-
-            //t.SetApartmentState(ApartmentState.STA);
-            t.Start();
+            ModelController.Instance.CrackHash(txtb_findhash.Text, min, max);
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -84,17 +64,17 @@ namespace View
         // Conectar
         private void Conectar(object sender, RoutedEventArgs e)
         {
-           try
-           {
-               string IP = txtb_IP.Text;
-               int port = int.Parse(txtb_Port.Text);
+            try
+            {
+                string IP = txtb_IP.Text;
+                int port = int.Parse(txtb_Port.Text);
 
-               ModelController.Instance.Connect(IP, port);
-           }
-            catch(SystemException ex)
-           {
-               MessageBox.Show("Formato incorreto de IP ou Porta.");
-           }
+                ModelController.Instance.Connect(IP, port);
+            }
+            catch (SystemException)
+            {
+                MessageBox.Show("Formato incorreto de IP ou Porta.");
+            }
         }
 
         // escutar porta
@@ -106,7 +86,7 @@ namespace View
 
                 ModelController.Instance.Listen(port);
             }
-            catch (SystemException ex)
+            catch (SystemException)
             {
                 MessageBox.Show("Formato incorreto de IP ou Porta.");
             }
@@ -128,31 +108,6 @@ namespace View
         }
     }
 
-    public class Runner
-    {
-        public string currentString;
-        MD5Decrypter dec;
 
-
-        public Runner(string hash, DecrypterRange range)
-        {
-            dec = new MD5Decrypter(hash, range);
-        }
-
-        public void Run()
-        {
-            try
-            {
-                while (true)
-                {
-                    dec.Crack();
-                }
-            }
-            catch (HashFoundException e)
-            {
-                MessageBox.Show("found: " + e.Message);
-            }
-        }
-    }
 
 }

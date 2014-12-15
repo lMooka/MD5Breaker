@@ -1,17 +1,18 @@
-﻿using MD5Breaker.Networking;
+﻿using MD5Breaker.Core.Exceptions;
+using MD5Breaker.Networking;
 using MD5Breaker.Networking.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MD5Breaker.Core
 {
     public class ProcessingManager
     {
-        // Singleton]
-        private string currentPassword;
+        // Singleton
         private static ProcessingManager _instance;
         public static ProcessingManager Instance
         {
@@ -21,9 +22,11 @@ namespace MD5Breaker.Core
             }
         }
 
-        public static uint BlockSize = (uint)(MD5Decrypter.CharRange.Length * MD5Decrypter.CharRange.Length * MD5Decrypter.CharRange.Length * MD5Decrypter.CharRange.Length);
+        public static ulong BlockSize;
 
+        private DecrypterRange range;
         private List<ProcessBlock> blocks;
+        public Thread ProcessingThread;
 
         private ProcessingManager()
         {
@@ -32,18 +35,14 @@ namespace MD5Breaker.Core
 
         public void InitBlocks(DecrypterRange range)
         {
-            blocks = new List<ProcessBlock>();
+            this.range = range;
+            ulong length = range.GetNumber();
 
-            ulong length = 1;
-
-            foreach (int element in range.endRange)
-                length *= Convert.ToUInt64(element);
+            blocks.Clear();
+            BlockSize = length / Convert.ToUInt64(10000 * range.endRange.Length);
 
             for (ulong plus = 0, id = 0; plus <= length; plus += BlockSize, id++)
-            {
-                range.Plus(plus);
-                blocks.Add(new ProcessBlock(id, range.Clone(), BlockState.Free));
-            }
+                blocks.Add(new ProcessBlock(id, BlockState.Free));
         }
 
         public ProcessBlock GetFreeBlock()
@@ -60,25 +59,57 @@ namespace MD5Breaker.Core
         public void ProcessBlock()
         {
             var block = GetFreeBlock();
-            ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, BlockState.Processing));
+            block.State = BlockState.Processing;
+            ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, block.State));
         }
 
-        public void Crack()
+        public void Crack(string hash)
+        {
+            ProcessBlock block = GetFreeBlock();
+            ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, BlockState.Processing));
+
+            CrackerThread r = new CrackerThread(hash, block);
+            ProcessingThread = new Thread(new ThreadStart(r.Run));
+            ProcessingThread.Start();
+        }
+
+        public void SetRange(DecrypterRange range)
+        {
+            this.range = range;
+        }
+    }
+
+    public class CrackerThread
+    {
+        public string currentString;
+        private MD5Decrypter decrypter;
+        private ProcessBlock block;
+
+        public CrackerThread(string hash, ProcessBlock block)
+        {
+            this.block = block;
+            decrypter = new MD5Decrypter(hash, new DecrypterRange(block.BlockId, ProcessingManager.BlockSize, Convert.ToUInt32(MD5Decrypter.CharRange.Length)));
+        }
+
+        public void Run()
         {
             try
             {
-
+                while (true)
+                {
+                    decrypter.Crack();
+                }
             }
-            catch (HashFoundException hfe)
+            catch (HashFoundException e)
             {
-                AnswerFound(hfe.Message);
+                ConnectionManager.Instance.Broadcast(new HashFoundPacket(e.Message));
+                ProcessingManager.Instance.ProcessingThread.Abort();
             }
-
-        }
-
-        public void AnswerFound(string Password)
-        {
-            ConnectionManager.Instance.Broadcast(new HashFoundPacket(Password));
+            catch (HashNotFoundException)
+            {
+                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, BlockState.Finished));
+                ProcessingManager.Instance.ProcessingThread.Abort();
+            }
         }
     }
 }

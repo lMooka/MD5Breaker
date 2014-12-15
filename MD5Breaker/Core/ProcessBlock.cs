@@ -21,13 +21,11 @@ namespace MD5Breaker.Core
     public class ProcessBlock
     {
         public ulong BlockId { get; set; }
-        public DecrypterRange Range { get; set; }
         public BlockState State;
 
-        public ProcessBlock(ulong blockId, DecrypterRange range, BlockState state)
+        public ProcessBlock(ulong blockId, BlockState state)
         {
             this.BlockId = blockId;
-            this.Range = range;
             this.State = state;
         }
     }

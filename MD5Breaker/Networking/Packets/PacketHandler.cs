@@ -52,17 +52,20 @@ namespace MD5Breaker.Networking.Packets
                     break;
 
                 case 3:
-                
                     ProcessingBlockNotificationPacket pbnp = new ProcessingBlockNotificationPacket(packet);
-                    
                     pm.SetProcessingState(pbnp.BlockId, pbnp.State);
                     break;
+
                 case 4:
                     HashFoundPacket hfPacket = new HashFoundPacket(packet);
                     OnHashFoundEvent(hfPacket.Password);
                     break;
 
-
+                case 5:
+                    InitBlocksPacket ibp = new InitBlocksPacket(packet);
+                    ProcessingManager.Instance.SetRange(ibp.Range);
+                    OnMessageReceived(ibp.Range.endRange.ToString());
+                    break;
             }
 
             return null;
