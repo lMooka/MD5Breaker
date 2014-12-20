@@ -22,7 +22,7 @@ namespace MD5Breaker.Core
                                         };
 
         public string Hash { get; private set; }
-        private DecrypterRange Range;
+        public DecrypterRange Range { get; private set; }
         private MD5 md5;
 
         public MD5Decrypter(string hash, DecrypterRange range)

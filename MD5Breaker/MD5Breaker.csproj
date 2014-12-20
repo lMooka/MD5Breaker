@@ -56,12 +56,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Cracker.cs" />
     <Compile Include="Core\DecrypterRange.cs" />
     <Compile Include="Core\Exceptions\HashFoundException.cs" />
     <Compile Include="Core\Exceptions\HashNotFoundException.cs" />
     <Compile Include="Core\MD5Decrypter.cs" />
     <Compile Include="Core\ProcessingManager.cs" />
     <Compile Include="Networking\Packets\BlockProcessPacket.cs" />
+    <Compile Include="Networking\Packets\BlockProcessPacket2.cs" />
     <Compile Include="Networking\Packets\InitiBlocksPacket.cs" />
     <Compile Include="Networking\Packets\HashFoundPacket.cs" />
     <Compile Include="Networking\Packets\ProcessingBlockNotificationPacket.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Networking\Packets\Packet.cs" />
     <Compile Include="Networking\Packets\PacketHandler.cs" />
     <Compile Include="Networking\Packets\ClientInfoPacket.cs" />
+    <Compile Include="Networking\Serialization\GenericSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

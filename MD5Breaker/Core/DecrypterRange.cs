@@ -5,14 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MD5Breaker.Core
-{
+{   
+    [Serializable()]
     public class DecrypterRange
     {
         public uint charOffset { get; private set; }
 
-        public uint[] startRange;
-        public uint[] endRange;
-        public uint[] currentRange;
+        public uint[] startRange { get; set; }
+        public uint[] endRange { get; set; }
+        public uint[] currentRange { get; set; }
 
         public DecrypterRange(uint[] startRange, uint[] endRange, uint charOffset)
         {
@@ -28,8 +29,8 @@ namespace MD5Breaker.Core
         {
             this.charOffset = charOffset;
 
-            this.startRange = RecursivePlus(blockid * blocksize, new uint[1] { 0 });
-            this.endRange = RecursivePlus(blockid * blocksize + blocksize, new uint[1] { 0 });
+            this.startRange = RecursivePlus(blockid * blocksize, new uint[] { 0 });
+            this.endRange = RecursivePlus(blockid * blocksize + blocksize, new uint[] { 0 });
 
             this.currentRange = (uint[]) startRange.Clone();
         }
@@ -42,6 +43,20 @@ namespace MD5Breaker.Core
         public ulong GetCurrentNumber()
         {
             return DecrypterRange.GetNumber(currentRange);
+        }
+
+        public ulong GetCombinationsAmount()
+        {
+            ulong startCombinations = 1;
+            ulong endCombinations = 1;
+
+            foreach (uint value in startRange)
+                startCombinations *= value;
+
+            foreach (uint value in endRange)
+                startCombinations *= value;
+
+            return endCombinations - startCombinations;
         }
 
         public static ulong GetNumber(uint[] range)

@@ -46,6 +46,15 @@
                     <TextBox Name="txtb_value" Margin="10,280,121,10"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Test2">
+                <Grid>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="276,243,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+                    <TextBox Name="test_blockid" HorizontalAlignment="Left" Height="23" Margin="45,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Name="test_blocksize" HorizontalAlignment="Left" Height="23" Margin="182,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+                    <TextBox Name="test_charoffset" HorizontalAlignment="Left" Height="23" Margin="328,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+
+                </Grid>
+            </TabItem>
 
 
         </TabControl>

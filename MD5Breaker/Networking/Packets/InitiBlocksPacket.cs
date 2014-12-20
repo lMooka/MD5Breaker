@@ -9,7 +9,6 @@ namespace MD5Breaker.Networking.Packets
 {
     public class InitBlocksPacket : Packet
     {
-
         private short _lengthStart;
         private short _lengthCurrent;
         private short _lengthEnd;

@@ -106,6 +106,12 @@ namespace View
             }
             txtb_text.Text += "\n";
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            DecrypterRange range = new DecrypterRange(Convert.ToUInt64(test_blockid.Text), Convert.ToUInt64(test_blocksize.Text), Convert.ToUInt32(test_charoffset.Text));
+
+        }
     }
 
 

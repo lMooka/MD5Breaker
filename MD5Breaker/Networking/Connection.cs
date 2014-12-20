@@ -15,18 +15,14 @@ namespace MD5Breaker.Networking
     public class Connection : IDisposable
     {
         public event ConnectionLostEvent ConnectionClosed;
-
         public int RemoteClientID { get; set; }
-
         public Socket socket { get; private set; }
-
-        public static int bufferSize = 512;
         byte[] buffer;
 
         public Connection(Socket socket)
         {
             this.socket = socket;
-            buffer = new byte[bufferSize];
+            buffer = new byte[Packet.bufferMaxLength];
         }
 
         void ReceivedCallback(IAsyncResult result)
@@ -43,7 +39,7 @@ namespace MD5Breaker.Networking
                 //handle
                 PacketHandler.Handle(this, buf);
 
-                buffer = new byte[bufferSize];
+                buffer = new byte[Packet.bufferMaxLength];
                 clienteSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, clienteSocket);
             }
             catch (Exception e)

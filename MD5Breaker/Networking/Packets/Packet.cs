@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MD5Breaker.Core.Exceptions;
+using MD5Breaker.Networking.Serialization;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +12,8 @@ namespace MD5Breaker.Networking.Packets
 {
     public abstract class Packet
     {
-        public static int HeaderSize = 4;
+        public static int HeaderSize = sizeof(ushort) * 2;
+        public static int bufferMaxLength = 512;
 
         public byte[] Data
         {
@@ -42,6 +45,11 @@ namespace MD5Breaker.Networking.Packets
             Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, sizeof(int));
         }
 
+        protected void WriteUInt(uint value, int offset)
+        {
+            Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, sizeof(int));
+        }
+
         protected void WriteULong(ulong value, int offset)
         {
             Buffer.BlockCopy(BitConverter.GetBytes(value), 0, buffer, offset, sizeof(ulong));
@@ -54,24 +62,20 @@ namespace MD5Breaker.Networking.Packets
 
         protected void WriteObject(object obj, int offset)
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream();
+            var sbuffer = GenericSerializer.GetBinary(obj);
 
-            bf.Serialize(ms, obj);
-            byte[] serialBuf = ms.ToArray();
+            if (sbuffer.Length > Packet.bufferMaxLength)
+                throw new PacketOutOfLengthException();
 
-            Buffer.BlockCopy(serialBuf, 0, buffer, offset, serialBuf.Length);
+            Buffer.BlockCopy(sbuffer, 0, buffer, offset, sbuffer.Length);
         }
 
-        protected T ReadObject<T>(byte[] bytes)
+        protected T ReadObject<T>(byte[] bytes, int offset, int count)
         {
-            MemoryStream memStream = new MemoryStream();
-            BinaryFormatter binForm = new BinaryFormatter();
+            byte[] tmpbuf = new byte[count];
 
-            memStream.Write(bytes, 0, bytes.Length);
-            memStream.Seek(0, SeekOrigin.Begin);
-
-            return (T)binForm.Deserialize(memStream);
+            Buffer.BlockCopy(bytes, offset, tmpbuf, 0, count);
+            return GenericSerializer.GetObject<T>(bytes);
         }
     }
 }

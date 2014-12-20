@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MD5Breaker.Networking;
 using MD5Breaker.Networking.Packets;
+using MD5Breaker.Networking.Serialization;
+using MD5Breaker.Core;
 
 namespace Client
 {
@@ -73,6 +75,14 @@ namespace Client
                         ColorMessage("Use: listen <Porta>\n" + e.Message, ConsoleColor.Red);
                         continue;
                     }
+                }
+                else if (command.Contains("debug"))
+                {
+                    DecrypterRange range = new DecrypterRange(0, 1000, 70);
+
+                    var bytes = GenericSerializer.GetBinary(range);
+
+                    var drange = GenericSerializer.GetObject<DecrypterRange>(bytes);
                 }
                 else
                 {
