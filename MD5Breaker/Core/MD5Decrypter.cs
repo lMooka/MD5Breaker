@@ -12,7 +12,6 @@ namespace MD5Breaker.Core
     {
         public static string currentPassword;
         public static string currentHashPassword;
-        private string initialHash = "";
 
         public static char[] CharRange = {
                                             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'k', 'x', 'w', 'y', 'z',
@@ -45,22 +44,24 @@ namespace MD5Breaker.Core
             return s;
         }
 
-        public void Crack()
+        public void Crack(ulong count)
         {
-            string gpw = GenerateSeqPassword();
-            string hash = GetMd5Hash(md5, gpw);
+            string gpw;
+            string hash;
+            uint counter = 0;
 
-            currentPassword = gpw;
-            currentHashPassword = hash;
+            while (counter++ <= count)
+            {
+                gpw = GenerateSeqPassword();
+                hash = GetMd5Hash(md5, gpw);
 
-            if (Hash == hash)
-                throw new HashFoundException(md5 + " : " + gpw);
+                currentPassword = gpw;
+                currentHashPassword = hash;
 
-            if (initialHash == hash)
-                throw new HashNotFoundException();
-
-            if (initialHash == "")
-                initialHash = hash;
+                if (Hash == hash)
+                    throw new HashFoundException(gpw);
+            }
+            throw new HashNotFoundException();
         }
 
         static string GetMd5Hash(MD5 md5Hash, string input)

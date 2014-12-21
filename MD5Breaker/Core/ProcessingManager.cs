@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MD5Breaker.Core
 {
     public class ProcessingManager
     {
+        // Events
+
+
         // Singleton
         private static ProcessingManager _instance;
         public static ProcessingManager Instance
@@ -23,7 +27,9 @@ namespace MD5Breaker.Core
         }
 
         public static ulong BlockSize;
+
         public bool Initialized = false;
+        public string Hash = "";
 
         private DecrypterRange range;
         private List<ProcessBlock> blocks;
@@ -44,6 +50,9 @@ namespace MD5Breaker.Core
 
             for (ulong plus = 0, id = 0; plus <= length; plus += BlockSize, id++)
                 blocks.Add(new ProcessBlock(id, BlockState.Free));
+
+            Random rnd = new Random();
+            blocks = blocks.OrderBy(item => rnd.Next()).ToList<ProcessBlock>();
 
             Initialized = true;
         }
@@ -77,15 +86,41 @@ namespace MD5Breaker.Core
             ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Processing));
 
             Cracker cracker = new Cracker(hash, block);
+            cracker.OnCompleted += OnCompleted;
+
             ProcessingThread = new Thread(new ThreadStart(cracker.Run));
             ProcessingThread.Start();
+            MessageBox.Show("cracking " + block.BlockId);
+        }
+
+        void OnCompleted(ProcessBlock block, Exception exc)
+        {
+            if (exc is HashFoundException)
+            {
+                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
+                ConnectionManager.Instance.Broadcast(new HashFoundPacket(exc.Message));
+                ProcessingManager.Instance.SetProcessingState(block.BlockId, BlockState.Finished);
+                ProcessingManager.Instance.ProcessingThread.Abort();
+                return;
+            }
+            else if(exc is HashNotFoundException)
+            {
+                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
+                ProcessingManager.Instance.SetProcessingState(block.BlockId, BlockState.Finished);
+                ProcessingManager.Instance.ProcessingThread.Abort();
+
+                Crack(Hash);
+
+            }
         }
 
         public void Setup(string hash, DecrypterRange decrypterRange)
         {
+            this.Hash = hash;
+
             ProcessingManager.Instance.InitBlocks(decrypterRange);
             ConnectionManager.Instance.Broadcast(new InitBlocksPacket(hash, decrypterRange));
-            ProcessingManager.Instance.Crack(hash);
+            ProcessingManager.Instance.Crack(Hash);
         }
     }
 }

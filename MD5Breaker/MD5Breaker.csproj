@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Core\Cracker.cs" />
     <Compile Include="Core\DecrypterRange.cs" />
+    <Compile Include="Core\Events.cs" />
     <Compile Include="Core\Exceptions\PacketOutOfLengthException.cs" />
     <Compile Include="Core\Exceptions\HashFoundException.cs" />
     <Compile Include="Core\Exceptions\HashNotFoundException.cs" />

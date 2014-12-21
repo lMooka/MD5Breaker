@@ -10,13 +10,11 @@ using System.Threading.Tasks;
 
 namespace MD5Breaker.Networking.Packets
 {
-    public delegate void PacketNotifierEvent(string message);
-
 
     public static class PacketHandler
     {
-        public static event PacketNotifierEvent OnMessageReceived;
-        public static event PacketNotifierEvent OnHashFoundEvent;
+        public static event ChatMessage OnMessageReceived;
+        public static event ChatMessage OnHashFoundEvent;
 
         public static Packet Handle(Connection conn, byte[] packet)
         {
@@ -67,6 +65,7 @@ namespace MD5Breaker.Networking.Packets
                 case 3:
                     ProcessingBlockNotifyPacket pbnp = new ProcessingBlockNotifyPacket(packet);
                     pm.SetProcessingState(pbnp.BlockId, pbnp.State);
+                    OnMessageReceived(string.Format("Block {0} | {1}.", pbnp.BlockId, pbnp.State.ToString()));
                     break;
 
                 case 4:

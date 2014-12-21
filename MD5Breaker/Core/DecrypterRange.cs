@@ -47,16 +47,7 @@ namespace MD5Breaker.Core
 
         public ulong GetCombinationsAmount()
         {
-            ulong startCombinations = 1;
-            ulong endCombinations = 1;
-
-            foreach (uint value in startRange)
-                startCombinations *= value;
-
-            foreach (uint value in endRange)
-                startCombinations *= value;
-
-            return endCombinations - startCombinations;
+            return GetNumber(endRange) - GetNumber(startRange);
         }
 
         public static ulong GetNumber(uint[] range)

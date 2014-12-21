@@ -20,12 +20,12 @@ namespace MD5Breaker.Networking.Packets
             set
             {
                 _Password = value;
-                WriteString(value, HeaderSize + sizeof(ulong));
+                WriteString(value, HeaderSize);
             }
         }
 
         public HashFoundPacket(string password)
-            : base((ushort)(HeaderSize +(password.Length)), 4)
+            : base((ushort)(HeaderSize + (password.Length)), 4)
         {
             this.Password = password;
         }

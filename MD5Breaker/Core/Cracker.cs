@@ -11,6 +11,8 @@ namespace MD5Breaker.Core
 {
     public class Cracker
     {
+        public event BlockProcessed OnCompleted;
+
         public string currentString;
         private MD5Decrypter decrypter;
         private ProcessBlock block;
@@ -25,29 +27,17 @@ namespace MD5Breaker.Core
 
         public void Run()
         {
-            ulong counter = 0;
-
             try
             {
-                while (true)
-                {
-                    if (counter++ == stopNumber)
-                        throw new HashNotFoundException();
-                    else
-                        decrypter.Crack();
-                }
+                decrypter.Crack(decrypter.Range.GetCombinationsAmount());
             }
             catch (HashFoundException e)
             {
-                ConnectionManager.Instance.Broadcast(new HashFoundPacket(e.Message));
-                ProcessingManager.Instance.SetProcessingState(block.BlockId, BlockState.Finished);
-                ProcessingManager.Instance.ProcessingThread.Abort();
+                OnCompleted(block, e);
             }
-            catch (HashNotFoundException)
+            catch (HashNotFoundException e)
             {
-                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
-                ProcessingManager.Instance.SetProcessingState(block.BlockId, BlockState.Finished);
-                ProcessingManager.Instance.ProcessingThread.Abort();
+                OnCompleted(block, e);
             }
         }
     }
