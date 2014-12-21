@@ -81,6 +81,9 @@ namespace MD5Breaker.Core
 
         public void Crack(string hash)
         {
+            if (!Initialized)
+                return;
+
             ProcessBlock block = GetFreeBlock();
             ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Processing));
 
@@ -102,9 +105,11 @@ namespace MD5Breaker.Core
         {
             if (exc is HashFoundException)
             {
+                this.Initialized = false;
                 SetProcessingState(block.BlockId, BlockState.Finished);
                 ConnectionManager.Instance.Broadcast(new HashFoundPacket(exc.Message));
-                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
+
+                //ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
                 //ConnectionManager.Instance.Broadcast(new MessagePacket(string.Format("{0}: Block {1} - {2}", ConnectionManager.Instance.ListenPort, block.BlockId, BlockState.Finished)));
                 MessageBox.Show(exc.Message);
                 //ProcessingThread.Abort();
