@@ -74,7 +74,7 @@ namespace MD5Breaker.Networking.Packets
                     HashFoundPacket hfPacket = new HashFoundPacket(packet);
                     OnMessageReceived("Password found " + hfPacket.Password);
                     OnHashFoundEvent(hfPacket.Password);
-                    ProcessingManager.Instance.ProcessingThread.Abort();
+                    pm.Initialized = false;
                     break;
 
                 case 5:

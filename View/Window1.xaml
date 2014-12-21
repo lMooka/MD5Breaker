@@ -32,7 +32,7 @@
                     <Button Content="Go" Margin="336,129,106,0" VerticalAlignment="Top" Click="Decrypt_Click"/>
                     <Button Content="update" HorizontalAlignment="Left" Margin="410,129,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
                     <TextBox x:Name="lbl_hash" Text="Not started" Margin="0,37,0,0" VerticalAlignment="Top" TextAlignment="Center" Height="22" IsReadOnly="True"/>
-                    <TextBox Name="txtb_findhash" HorizontalAlignment="Left" Height="23" Margin="0,64,0,0" TextWrapping="Wrap" Text="2eae34ebf8cdec532f8bf62340cd896c" VerticalAlignment="Top" Width="517" TextAlignment="Center"/>
+                    <TextBox Name="txtb_findhash" HorizontalAlignment="Left" Height="23" Margin="0,64,0,0" TextWrapping="Wrap" Text="30ca60dc91da259f0943dab6e76437b6" VerticalAlignment="Top" Width="517" TextAlignment="Center"/>
                     <TextBox Name="txtb_min" HorizontalAlignment="Left" Height="23" Margin="181,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="4"/>
                     <Label Content="min. password character count" HorizontalAlignment="Left" Margin="0,92,0,0" VerticalAlignment="Top" Width="176"/>
                     <TextBox Name="txtb_max" HorizontalAlignment="Left" Height="23" Margin="181,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" Text="5"/>
