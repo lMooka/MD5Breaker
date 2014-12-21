@@ -9,15 +9,15 @@ namespace MD5Breaker.Core
     [Serializable()]
     public class DecrypterRange
     {
-        public uint charOffset { get; private set; }
+        public uint charCount { get; private set; }
 
         public uint[] startRange { get; set; }
         public uint[] endRange { get; set; }
         public uint[] currentRange { get; set; }
 
-        public DecrypterRange(uint[] startRange, uint[] endRange, uint charOffset)
+        public DecrypterRange(uint[] startRange, uint[] endRange, uint charCount)
         {
-            this.charOffset = charOffset;
+            this.charCount = charCount;
             this.startRange = startRange;
             this.endRange = endRange;
 
@@ -25,9 +25,9 @@ namespace MD5Breaker.Core
                 currentRange = (uint[])startRange.Clone();
         }
 
-        public DecrypterRange(ulong blockid, ulong blocksize, uint charOffset)
+        public DecrypterRange(ulong blockid, ulong blocksize, uint charCount)
         {
-            this.charOffset = charOffset;
+            this.charCount = charCount;
 
             this.startRange = RecursivePlus(blockid * blocksize, new uint[] { 0 });
             this.endRange = RecursivePlus(blockid * blocksize + blocksize, new uint[] { 0 });
@@ -78,7 +78,7 @@ namespace MD5Breaker.Core
             {
                 currentRange[i]++;
 
-                if (currentRange[i] < charOffset)
+                if (currentRange[i] < charCount)
                     break;
                 else
                 {
@@ -115,7 +115,7 @@ namespace MD5Breaker.Core
             {
                 result[i] += currentRange[i];
 
-                if (result[i] < charOffset)
+                if (result[i] < charCount)
                     break;
                 else
                 {
@@ -140,13 +140,13 @@ namespace MD5Breaker.Core
 
         public uint[] RecursivePlus(ulong value, uint[] array)
         {
-            ulong plusNext = (value / charOffset);
-            ulong lastValue = array[array.Length - 1] + (value - (plusNext * charOffset));
+            ulong plusNext = (value / charCount);
+            ulong lastValue = array[array.Length - 1] + (value - (plusNext * charCount));
 
             if (plusNext > 0)
             {
                 uint[] nArray;
-                if (plusNext > charOffset && array.Length == 1)
+                if (plusNext > charCount && array.Length == 1)
                 {
                     nArray = new uint[array.Length];
                     nArray[0] = 0;
@@ -184,7 +184,7 @@ namespace MD5Breaker.Core
 
         public DecrypterRange Clone()
         {
-            DecrypterRange range = new DecrypterRange(startRange, endRange, charOffset);
+            DecrypterRange range = new DecrypterRange(startRange, endRange, charCount);
             range.currentRange = currentRange;
 
             return range;

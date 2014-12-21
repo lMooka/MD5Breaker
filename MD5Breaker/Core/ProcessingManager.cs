@@ -23,6 +23,7 @@ namespace MD5Breaker.Core
         }
 
         public static ulong BlockSize;
+        public bool Initialized = false;
 
         private DecrypterRange range;
         private List<ProcessBlock> blocks;
@@ -43,6 +44,8 @@ namespace MD5Breaker.Core
 
             for (ulong plus = 0, id = 0; plus <= length; plus += BlockSize, id++)
                 blocks.Add(new ProcessBlock(id, BlockState.Free));
+
+            Initialized = true;
         }
 
         public ProcessBlock GetFreeBlock()
@@ -59,29 +62,30 @@ namespace MD5Breaker.Core
         public void ProcessHash(string hash, DecrypterRange range)
         {
             InitBlocks(range);
-
         }
 
         public void ProcessBlock()
         {
             var block = GetFreeBlock();
             block.State = BlockState.Processing;
-            ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, block.State));
+            ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, block.State));
         }
 
         public void Crack(string hash)
         {
             ProcessBlock block = GetFreeBlock();
-            ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, BlockState.Processing));
+            ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Processing));
 
-            Cracker r = new Cracker(hash, block);
-            ProcessingThread = new Thread(new ThreadStart(r.Run));
+            Cracker cracker = new Cracker(hash, block);
+            ProcessingThread = new Thread(new ThreadStart(cracker.Run));
             ProcessingThread.Start();
         }
 
-        public void SetRange(DecrypterRange range)
+        public void Setup(string hash, DecrypterRange decrypterRange)
         {
-            this.range = range;
+            ProcessingManager.Instance.InitBlocks(decrypterRange);
+            ConnectionManager.Instance.Broadcast(new InitBlocksPacket(hash, decrypterRange));
+            ProcessingManager.Instance.Crack(hash);
         }
     }
 }

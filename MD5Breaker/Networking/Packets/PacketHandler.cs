@@ -1,4 +1,6 @@
 ﻿using MD5Breaker.Core;
+using MD5Breaker.Networking.Packets.PacketDataStructure;
+using MD5Breaker.Networking.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,8 +19,19 @@ namespace MD5Breaker.Networking.Packets
         public static event PacketNotifierEvent OnHashFoundEvent;
 
         public static Packet Handle(Connection conn, byte[] packet)
-        {            
-            ushort packetType = BitConverter.ToUInt16(packet, 2);
+        {
+            ushort packetType;
+
+            try
+            {
+                var obj = GenericSerializer.GetObject<InitBlocksData>(packet);
+                packetType = obj.Type;
+            }
+            catch (Exception e)
+            {
+                packetType = BitConverter.ToUInt16(packet, 2);
+            }
+            
             var cm = ConnectionManager.Instance;
             var pm = ProcessingManager.Instance;
 
@@ -52,7 +65,7 @@ namespace MD5Breaker.Networking.Packets
                     break;
 
                 case 3:
-                    ProcessingBlockNotificationPacket pbnp = new ProcessingBlockNotificationPacket(packet);
+                    ProcessingBlockNotifyPacket pbnp = new ProcessingBlockNotifyPacket(packet);
                     pm.SetProcessingState(pbnp.BlockId, pbnp.State);
                     break;
 
@@ -63,8 +76,17 @@ namespace MD5Breaker.Networking.Packets
 
                 case 5:
                     InitBlocksPacket ibp = new InitBlocksPacket(packet);
-                    ProcessingManager.Instance.SetRange(ibp.Range);
-                    OnMessageReceived(ibp.Range.endRange.ToString());
+                    
+                    if (pm.Initialized)
+                        return ibp;
+
+                    OnMessageReceived("Initializing blocks...");
+                    pm.InitBlocks(ibp.Range);
+                    pm.Crack(ibp.MD5Hash);
+                    break;
+
+                case 6:
+                    BlockProcessPacket bpp = new BlockProcessPacket(packet);
                     break;
             }
 

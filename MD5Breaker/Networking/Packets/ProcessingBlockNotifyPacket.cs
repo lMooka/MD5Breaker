@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MD5Breaker.Networking.Packets
 {
-    public class ProcessingBlockNotificationPacket : Packet
+    public class ProcessingBlockNotifyPacket : Packet
     {
         private ulong _BlockId;
         private BlockState _State;
@@ -37,14 +37,14 @@ namespace MD5Breaker.Networking.Packets
             }
         }
 
-        public ProcessingBlockNotificationPacket(ulong blockId, BlockState state)
+        public ProcessingBlockNotifyPacket(ulong blockId, BlockState state)
             : base((ushort)(HeaderSize + sizeof(ulong) + sizeof(int)), 3)
         {
             this.BlockId = blockId;
             this.State = state;
         }
 
-        public ProcessingBlockNotificationPacket(byte[] buf)
+        public ProcessingBlockNotifyPacket(byte[] buf)
             : base((ushort)buf.Length, 3)
         {
             _BlockId = BitConverter.ToUInt64(buf, HeaderSize);

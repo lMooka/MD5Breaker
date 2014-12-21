@@ -1,4 +1,5 @@
 ﻿using MD5Breaker.Core.Exceptions;
+using MD5Breaker.Networking.Packets.PacketDataStructure;
 using MD5Breaker.Networking.Serialization;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,8 @@ namespace MD5Breaker.Networking.Packets
 {
     public abstract class Packet
     {
+        public static int bufferMaxLength = 1024;
         public static int HeaderSize = sizeof(ushort) * 2;
-        public static int bufferMaxLength = 512;
 
         public byte[] Data
         {
@@ -21,6 +22,11 @@ namespace MD5Breaker.Networking.Packets
         }
 
         protected byte[] buffer;
+
+        public Packet()
+        {
+            
+        }
 
         public Packet(ushort length, ushort type)
         {
@@ -30,7 +36,6 @@ namespace MD5Breaker.Networking.Packets
         }
 
         public Packet(byte[] buf)
-            : this((ushort)buf.Length, 2)
         {
             buffer = buf;
         }
@@ -67,7 +72,7 @@ namespace MD5Breaker.Networking.Packets
             if (sbuffer.Length > Packet.bufferMaxLength)
                 throw new PacketOutOfLengthException();
 
-            Buffer.BlockCopy(sbuffer, 0, buffer, offset, sbuffer.Length);
+            Buffer.BlockCopy(sbuffer, 0, buffer, offset, sbuffer.Length - offset);
         }
 
         protected T ReadObject<T>(byte[] bytes, int offset, int count)
@@ -75,7 +80,7 @@ namespace MD5Breaker.Networking.Packets
             byte[] tmpbuf = new byte[count];
 
             Buffer.BlockCopy(bytes, offset, tmpbuf, 0, count);
-            return GenericSerializer.GetObject<T>(bytes);
+            return GenericSerializer.GetObject<T>(tmpbuf);
         }
     }
 }

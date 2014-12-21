@@ -47,8 +47,7 @@ namespace Control
             for (i = 0; i < max; i++)
                 end[i] = Convert.ToUInt32(MD5Decrypter.CharRange.Length);
 
-            ProcessingManager.Instance.InitBlocks(new DecrypterRange(start, end, Convert.ToUInt32(MD5Decrypter.CharRange.Length)));
-            ProcessingManager.Instance.Crack(hash);
+            ProcessingManager.Instance.Setup(hash, new DecrypterRange(start, end, Convert.ToUInt32(MD5Decrypter.CharRange.Length)));
         }
     }
 }

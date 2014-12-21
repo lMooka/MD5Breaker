@@ -58,15 +58,18 @@
   <ItemGroup>
     <Compile Include="Core\Cracker.cs" />
     <Compile Include="Core\DecrypterRange.cs" />
+    <Compile Include="Core\Exceptions\PacketOutOfLengthException.cs" />
     <Compile Include="Core\Exceptions\HashFoundException.cs" />
     <Compile Include="Core\Exceptions\HashNotFoundException.cs" />
     <Compile Include="Core\MD5Decrypter.cs" />
     <Compile Include="Core\ProcessingManager.cs" />
-    <Compile Include="Networking\Packets\BlockProcessPacket.cs" />
     <Compile Include="Networking\Packets\BlockProcessPacket2.cs" />
-    <Compile Include="Networking\Packets\InitiBlocksPacket.cs" />
+    <Compile Include="Networking\Packets\BlockProcessPacket.cs" />
+    <Compile Include="Networking\Packets\InitBlocksPacket.cs" />
     <Compile Include="Networking\Packets\HashFoundPacket.cs" />
-    <Compile Include="Networking\Packets\ProcessingBlockNotificationPacket.cs" />
+    <Compile Include="Networking\Packets\PacketDataStructure\InitBlocksData.cs" />
+    <Compile Include="Networking\Packets\PacketDataStructure\PacketData.cs" />
+    <Compile Include="Networking\Packets\ProcessingBlockNotifyPacket.cs" />
     <Compile Include="Core\ProcessBlock.cs" />
   </ItemGroup>
   <ItemGroup>

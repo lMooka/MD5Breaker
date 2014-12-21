@@ -20,14 +20,18 @@ namespace MD5Breaker.Networking.Serialization
 
         public static T GetObject<T>(byte[] bytes)
         {
-            using (MemoryStream memStream = new MemoryStream(bytes.Length))
+            using (MemoryStream memStream = new MemoryStream(bytes))
             {
-
-                memStream.Write(bytes, 0, bytes.Length);
-                memStream.Seek(0, SeekOrigin.Begin);
-
                 return (T)new BinaryFormatter().Deserialize(memStream);
             }
+        }
+
+        public static int GetByteLength(object obj)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            new BinaryFormatter().Serialize(ms, obj);
+            return ms.ToArray().Length;
         }
     }
 }

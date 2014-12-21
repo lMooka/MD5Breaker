@@ -1,4 +1,5 @@
 ﻿using MD5Breaker.Core;
+using MD5Breaker.Networking.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,36 +10,30 @@ namespace MD5Breaker.Networking.Packets
 {
     public class BlockProcessPacket : Packet
     {
-        private uint endOffset;
-        private uint currentOffset;
-        public DecrypterRange DecryRange;
-
-        public BlockProcessPacket(DecrypterRange decryRange)
-            : base((ushort)(HeaderSize + (3 * sizeof(uint)) + (decryRange.startRange.Length * sizeof(uint) + decryRange.endRange.Length * sizeof(uint) + decryRange.currentRange.Length * sizeof(uint))), 6)
+        private DecrypterRange _Range;
+        public DecrypterRange Range
         {
-            this.DecryRange = decryRange;
-            endOffset = (uint)decryRange.startRange.Length;
-            currentOffset = (uint)(endOffset + decryRange.endRange.Length);
+            get
+            {
+                return _Range;
+            }
+            set
+            {
+                _Range = value;
+                WriteObject(value, HeaderSize);
+            }
+        }
 
-            WriteUInt(decryRange.charOffset, HeaderSize);
-            WriteUInt(endOffset, HeaderSize + sizeof(uint));
-            WriteUInt(currentOffset, HeaderSize + 2 * sizeof(uint));
-
-            int counter = 0;
-            foreach (uint value in decryRange.startRange)
-                WriteUInt(value, HeaderSize + counter++ * sizeof(uint));
-
-            foreach (uint value in decryRange.endRange)
-                WriteUInt(value, HeaderSize + counter++ * sizeof(uint));
-
-            foreach (uint value in decryRange.currentRange)
-                WriteUInt(value, HeaderSize + counter++ * sizeof(uint));
+        public BlockProcessPacket(DecrypterRange range)
+            : base((ushort)(HeaderSize + GenericSerializer.GetByteLength(range)), 6)
+        {
+            this.Range = range;
         }
 
         public BlockProcessPacket(byte[] buf)
             : base(buf)
         {
-            
+            Range = ReadObject<DecrypterRange>(buf, HeaderSize, buf.Length - HeaderSize);
         }
     }
 }

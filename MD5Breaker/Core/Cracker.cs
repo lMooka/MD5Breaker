@@ -45,7 +45,7 @@ namespace MD5Breaker.Core
             }
             catch (HashNotFoundException)
             {
-                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotificationPacket(block.BlockId, BlockState.Finished));
+                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
                 ProcessingManager.Instance.SetProcessingState(block.BlockId, BlockState.Finished);
                 ProcessingManager.Instance.ProcessingThread.Abort();
             }
