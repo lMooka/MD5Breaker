@@ -16,7 +16,7 @@ namespace MD5Breaker.Networking
     public class ConnectionManager
     {
         public int ClientID;
-        private ushort ListenPort;
+        public ushort ListenPort;
 
         // Singleton
         private static ConnectionManager _instance;

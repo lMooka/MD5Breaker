@@ -13,10 +13,10 @@ namespace MD5Breaker.Core
     {
         public event BlockProcessed OnCompleted;
 
-        public string currentString;
-        private MD5Decrypter decrypter;
-        private ProcessBlock block;
         private ulong stopNumber;
+
+        private ProcessBlock block;
+        private MD5Decrypter decrypter;
 
         public Cracker(string hash, ProcessBlock block)
         {
@@ -29,7 +29,7 @@ namespace MD5Breaker.Core
         {
             try
             {
-                decrypter.Crack(decrypter.Range.GetCombinationsAmount());
+                decrypter.Crack(ProcessingManager.BlockSize);
             }
             catch (HashFoundException e)
             {

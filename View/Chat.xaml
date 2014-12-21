@@ -7,6 +7,6 @@
     <Grid>
         <TextBox Name="txtb_msg" Margin="10,0,91,9" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" KeyUp="Press_Enter"/>
         <Button Content="Send" Margin="0,0,10,9" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom"/>
-        <TextBox Name="MessageArea" Margin="10,10,10,37" TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
+        <TextBox Name="MessageArea" Margin="10,10,10,37" TextWrapping="Wrap" IsReadOnly="True" VerticalScrollBarVisibility="Auto" IsEnabled="False"/>
     </Grid>
 </UserControl>

@@ -15,7 +15,6 @@ namespace MD5Breaker.Core
     {
         // Events
 
-
         // Singleton
         private static ProcessingManager _instance;
         public static ProcessingManager Instance
@@ -46,7 +45,7 @@ namespace MD5Breaker.Core
             ulong length = range.GetNumber();
 
             blocks.Clear();
-            BlockSize = length / Convert.ToUInt64(10000 * range.endRange.Length);
+            BlockSize = length / Convert.ToUInt64(1000 * range.endRange.Length);
 
             for (ulong plus = 0, id = 0; plus <= length; plus += BlockSize, id++)
                 blocks.Add(new ProcessBlock(id, BlockState.Free));
@@ -88,29 +87,37 @@ namespace MD5Breaker.Core
             Cracker cracker = new Cracker(hash, block);
             cracker.OnCompleted += OnCompleted;
 
+            if (ProcessingThread != null)
+            {
+                //MessageBox.Show(ProcessingThread.ThreadState.ToString());
+                ProcessingThread = null;
+            }
+
             ProcessingThread = new Thread(new ThreadStart(cracker.Run));
             ProcessingThread.Start();
-            MessageBox.Show("cracking " + block.BlockId);
+            //MessageBox.Show("cracking " + block.BlockId);
         }
 
         void OnCompleted(ProcessBlock block, Exception exc)
         {
             if (exc is HashFoundException)
             {
-                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
+                SetProcessingState(block.BlockId, BlockState.Finished);
                 ConnectionManager.Instance.Broadcast(new HashFoundPacket(exc.Message));
-                ProcessingManager.Instance.SetProcessingState(block.BlockId, BlockState.Finished);
-                ProcessingManager.Instance.ProcessingThread.Abort();
+                ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
+                //ConnectionManager.Instance.Broadcast(new MessagePacket(string.Format("{0}: Block {1} - {2}", ConnectionManager.Instance.ListenPort, block.BlockId, BlockState.Finished)));
+                MessageBox.Show(exc.Message);
+                //ProcessingThread.Abort();
+                
                 return;
             }
             else if(exc is HashNotFoundException)
             {
                 ConnectionManager.Instance.Broadcast(new ProcessingBlockNotifyPacket(block.BlockId, BlockState.Finished));
-                ProcessingManager.Instance.SetProcessingState(block.BlockId, BlockState.Finished);
-                ProcessingManager.Instance.ProcessingThread.Abort();
-
-                Crack(Hash);
-
+                //ConnectionManager.Instance.Broadcast(new MessagePacket(string.Format("{0}: Block {1} - {2}", ConnectionManager.Instance.ListenPort, block.BlockId, block.State.ToString())));
+                SetProcessingState(block.BlockId, BlockState.Finished);
+                
+                this.Crack(Hash);
             }
         }
 

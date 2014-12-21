@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MD5Breaker.Networking.Packets
 {
@@ -66,11 +67,14 @@ namespace MD5Breaker.Networking.Packets
                     ProcessingBlockNotifyPacket pbnp = new ProcessingBlockNotifyPacket(packet);
                     pm.SetProcessingState(pbnp.BlockId, pbnp.State);
                     OnMessageReceived(string.Format("Block {0} | {1}.", pbnp.BlockId, pbnp.State.ToString()));
+                    //MessageBox.Show(string.Format("Block {0} | {1}.", pbnp.BlockId, pbnp.State.ToString()));
                     break;
 
                 case 4:
                     HashFoundPacket hfPacket = new HashFoundPacket(packet);
+                    OnMessageReceived("Password found " + hfPacket.Password);
                     OnHashFoundEvent(hfPacket.Password);
+                    ProcessingManager.Instance.ProcessingThread.Abort();
                     break;
 
                 case 5:
@@ -80,8 +84,8 @@ namespace MD5Breaker.Networking.Packets
                         return ibp;
 
                     OnMessageReceived("Initializing blocks...");
-                    pm.InitBlocks(ibp.Range);
-                    pm.Crack(ibp.MD5Hash);
+                    pm.Setup(ibp.MD5Hash, ibp.Range);
+                    OnMessageReceived("Blocks Initialized.");
                     break;
 
                 case 6:

@@ -27,8 +27,8 @@ namespace MD5Breaker.Networking
 
         void ReceivedCallback(IAsyncResult result)
         {
-            //try
-            //{
+            try
+            {
                 Socket clientSocket = result.AsyncState as Socket;
 
                 int bufSize = clientSocket.EndReceive(result);
@@ -41,11 +41,11 @@ namespace MD5Breaker.Networking
 
                 buffer = new byte[Packet.bufferMaxLength];
                 clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceivedCallback, clientSocket);
-            //}
-            //catch (Exception e)
-            //{
-            //    ConnectionClosed(this, e);
-            //}
+            }
+            catch (Exception e)
+            {
+                ConnectionClosed(this, e);
+            }
         }
 
         public void Activate()
